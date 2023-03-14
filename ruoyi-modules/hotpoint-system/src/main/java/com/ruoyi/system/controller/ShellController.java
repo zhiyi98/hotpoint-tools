@@ -2,6 +2,8 @@ package com.ruoyi.system.controller;
 
 import com.alibaba.nacos.shaded.com.google.gson.Gson;
 import com.ruoyi.common.core.utils.ShellCommandExecutor;
+import com.ruoyi.common.core.web.controller.BaseController;
+import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.system.domain.HotPoint;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,15 +20,15 @@ import java.util.regex.Pattern;
  */
 @RestController
 @RequestMapping("/shell")
-public class ShellController {
+public class ShellController extends BaseController {
 
     @PostMapping("/execute")
-    public String execute(@RequestParam("command") String command) {
-        return ShellCommandExecutor.execute(command);
+    public AjaxResult execute(@RequestParam("command") String command) {
+        return success(ShellCommandExecutor.execute(command));
     }
 
     @PostMapping("/executeAndParse")
-    public String execute(@RequestParam("command") String command,
+    public AjaxResult execute(@RequestParam("command") String command,
                           @RequestParam("title") String title,
                           @RequestParam("link") String link) {
         List<HotPoint> result;
@@ -54,10 +56,10 @@ public class ShellController {
                 }
             }
         } catch (Exception e) {
-            return e.getMessage();
+            return error(e.getMessage());
         }
         Gson gson = new Gson();
-        return gson.toJson(result);
+        return success(gson.toJson(result));
     }
 
 }
